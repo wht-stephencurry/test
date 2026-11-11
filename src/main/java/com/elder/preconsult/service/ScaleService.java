@@ -24,12 +24,17 @@ public class ScaleService {
 
     /**
      * 查询启用状态的量表列表，按 id 升序。空列表属于正常业务结果，不抛异常。
+     *
+     * @param category 可选分类；为 null 或空白时不加筛选条件，行为与原来一致
      */
-    public List<ScaleVO> listEnabled() {
-        List<Scale> scales = scaleMapper.selectList(
-                new LambdaQueryWrapper<Scale>()
-                        .eq(Scale::getStatus, 1)
-                        .orderByAsc(Scale::getId));
+    public List<ScaleVO> listEnabled(String category) {
+        LambdaQueryWrapper<Scale> wrapper = new LambdaQueryWrapper<Scale>()
+                .eq(Scale::getStatus, 1);
+        if (category != null && !category.isBlank()) {
+            wrapper.eq(Scale::getCategory, category.trim());
+        }
+        wrapper.orderByAsc(Scale::getId);
+        List<Scale> scales = scaleMapper.selectList(wrapper);
         return scales.stream().map(this::toVO).toList();
     }
 

@@ -41,8 +41,18 @@ paths:
 
   /api/scales:
     get:
-      summary: 查询启用状态的量表列表（21 张）
+      summary: 查询启用状态的量表列表（21 张），可按分类筛选
       operationId: listScales
+      parameters:
+        - name: category
+          in: query
+          required: false
+          description: |
+            按量表分类精确筛选，取值来自 scale.category 字段。
+            不传时返回全部启用量表；传入不存在的分类时返回空数组（code 仍为 0）。
+          schema:
+            type: string
+          example: 认知功能
       responses:
         '200':
           description: 成功

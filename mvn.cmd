@@ -1,10 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
 
-rem ============================================================
-rem  本机 Maven 启动器（项目未安装独立 Maven，复用 IDEA 自带 Maven 3.9.9）
-rem  用法与本机 mvn 完全一致，例如：mvn.cmd -q -DskipTests package
-rem ============================================================
+rem Local Maven launcher for this machine.
+rem No standalone Maven installed; reuse the one bundled with IDEA 3.9.9.
+rem Usage: mvn.cmd -q -DskipTests package
 
 set "PROJECT_DIR=%~dp0"
 
