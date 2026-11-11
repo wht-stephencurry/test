@@ -1,0 +1,120 @@
+openapi: 3.0.3
+info:
+  title: 老年预问诊与综合评估系统 API
+  version: 1.0.0
+  description: |
+    接口契约唯一来源（AGENTS.md C.4）。新增或修改接口，先改本文件，再改代码，两者必须一致。
+    所有接口统一返回 { code, message, data }，成功时 code = 0。
+
+servers:
+  - url: http://localhost:8080
+    description: 本地（H2 内存库）
+
+paths:
+  /api/health:
+    get:
+      summary: 健康检查
+      operationId: health
+      responses:
+        '200':
+          description: 服务正常
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        example: UP
+                      profiles:
+                        type: string
+                        example: local
+
+  /api/scales:
+    get:
+      summary: 查询启用状态的量表列表（21 张）
+      operationId: listScales
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScaleVO'
+
+  /api/scales/{code}:
+    get:
+      summary: 按编码查询单个量表（大小写不敏感）
+      operationId: getScaleByCode
+      parameters:
+        - name: code
+          in: path
+          required: true
+          schema:
+            type: string
+          example: ADL
+      responses:
+        '200':
+          description: 成功；量表不存在时返回业务错误码 40001
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 0
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    $ref: '#/components/schemas/ScaleVO'
+              examples:
+                notFound:
+                  value:
+                    code: 40001
+                    message: 量表不存在：NOT_EXIST
+                    data: null
+
+components:
+  schemas:
+    ScaleVO:
+      type: object
+      description: 量表出参，禁止包含 id / status / createTime 等内部字段
+      properties:
+        code:
+          type: string
+          example: ADL
+        name:
+          type: string
+          example: 日常生活活动能力（Barthel 指数）
+        category:
+          type: string
+          example: 日常生活能力
+        scoringType:
+          type: string
+          enum: [SUM, WEIGHTED, MAPPING]
+          example: SUM
+        itemCount:
+          type: integer
+          example: 10
