@@ -6,6 +6,7 @@ import com.elder.preconsult.vo.ScaleVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -25,10 +26,13 @@ public class ScaleController {
 
     /**
      * 查询启用状态的量表列表。
+     *
+     * @param category 可选分类；不传则返回全部，传空串等同不传
      */
     @GetMapping
-    public ApiResponse<List<ScaleVO>> list() {
-        return ApiResponse.ok(scaleService.listEnabled());
+    public ApiResponse<List<ScaleVO>> list(
+            @RequestParam(value = "category", required = false) String category) {
+        return ApiResponse.ok(scaleService.listEnabled(category));
     }
 
     /**
